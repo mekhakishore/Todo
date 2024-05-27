@@ -72,14 +72,15 @@ class Update_user(View):
     def post(self,request,**kwargs):
 
         id=kwargs.get("pk")
+       
         data=User.objects.get(id=id)
+        
         form=Register(request.POST,instance=data)
+        
         if form.is_valid():
-            User.objects.create_user(**form.cleaned_data)
-            return redirect("signin")
-    
-
-
+           
+            form.save()
+        return redirect("signin")
      
 class Signin(View):
 
@@ -114,6 +115,11 @@ class Signin(View):
             else:
                 form=LoginForm()
                 return render(request,"login.html",{"form":form})
+
+
+
+
+
 @method_decorator(signing_required,name="dispatch")            
 class Add_task(View):
 
@@ -151,6 +157,9 @@ class Delete_task(View):
         Taskmodel.objects.get(id=id).delete()
 
         return redirect("index")
+
+
+
 class Task_edit(View):
 
     def get(self,request,*args,**kwargs):
@@ -163,6 +172,8 @@ class Task_edit(View):
             obj.completed = True
             obj.save()
             return redirect("index")
+
+
 class Signout(View):
 
     def get(self,request):
@@ -170,6 +181,8 @@ class Signout(View):
         logout(request)
 
         return redirect('signin')      
+
+
 
 class User_del(View):
 
